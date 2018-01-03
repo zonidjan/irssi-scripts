@@ -23,7 +23,8 @@ sub msg {
 	my $server = $dest->{server};
 	my $mynick = $server->{nick};
 	return unless ($dest->{level} & MSGLEVEL_HILIGHT)
-	           or ($dest->{level} & MSGLEVEL_MSGS && index($stripped, $mynick) != -1 && $stripped !~ /<.?\Q$mynick\E>/);
+	           or ($dest->{level} & MSGLEVEL_MSGS && index($stripped, $mynick) != -1);
+	return if $stripped =~ /<.?\Q$mynick\E>/; # avoid quotes
 	return if (!$server->{usermode_away} && Irssi::settings_get_bool('smshi_away_only'));
 
 	my $msg = '';
