@@ -49,8 +49,9 @@ sub msg {
 	$req->content("To=$to&From=$from&Body=$sms");
 
 	my $res = $ua->request($req);
+	return unless Irssi::settings_get_bool('smshi_debug');
 	if ($res->is_success) {
-		print "Good.";
+		print "Good. Sent to $to from $from: $sms";
 	} else {
 		print $req->url;
 		print $req->content;
@@ -61,6 +62,7 @@ sub msg {
 
 Irssi::settings_add_bool('smshi', 'smshi_active', 0);
 Irssi::settings_add_bool('smshi', 'smshi_away_only', 1);
+Irssi::settings_add_bool('smshi', 'smshi_debug', 0);
 Irssi::settings_add_str('smshi', 'smshi_sid', '');
 Irssi::settings_add_str('smshi', 'smshi_token', '');
 Irssi::settings_add_str('smshi', 'smshi_from', '');
