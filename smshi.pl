@@ -21,12 +21,11 @@ sub msg {
 	my ($dest, $text, $stripped) = @_;
 #	my ($server, $msg, $nick, $addr, $target) = @_;
 	my $server = $dest->{server};
-	return unless ($dest->{level} & MSGLEVEL_HILIGHT);
+	my $mynick = $server->{nick};
+	return unless ($dest->{level} & MSGLEVEL_HILIGHT)
+	           or ($dest->{level} & MSGLEVEL_MSGS && index($stripped, $mynick) != -1 && $stripped !~ /<.?\Q$mynick\E>/);
 	return if (!$server->{usermode_away} && Irssi::settings_get_bool('smshi_away_only'));
 
-#	$text =~ s/\003\d{0,2}//g;
-#	$text =~ s/\002|\037//g;
-#	$text = substr($text, Irssi::settings_get_int('smshi_skip_first'));
 	my $msg = '';
 	for my $c (split //, $stripped) {
 		if (ord($c) > 31 && ord($c) < 127) {
@@ -36,7 +35,8 @@ sub msg {
 		}
 	}
 
-	my $sms = $server->{tag}.$msg;
+	my $chname = $dest->{window}->get_active_name();
+	my $sms = $server->{tag}."/".$chname.$msg;
 
 	my $sid = Irssi::settings_get_str('smshi_sid');
 	my $token = Irssi::settings_get_str('smshi_token');
@@ -67,7 +67,6 @@ Irssi::settings_add_str('smshi', 'smshi_sid', '');
 Irssi::settings_add_str('smshi', 'smshi_token', '');
 Irssi::settings_add_str('smshi', 'smshi_from', '');
 Irssi::settings_add_str('smshi', 'smshi_to', '');
-Irssi::settings_add_int('smshi', 'smshi_skip_first', 0);
 
 Irssi::signal_add('print text', 'msg');
 Irssi::print('%G>>%n '.$IRSSI{name}.' '.$VERSION.' loaded');
