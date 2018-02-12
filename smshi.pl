@@ -1,31 +1,32 @@
+# smshi - sends highlights via SMS, using Twilio
+
 use Irssi;
 use vars qw($VERSION %IRSSI);
 
 use LWP::UserAgent;
 my $ua = LWP::UserAgent->new;
-$ua->agent("SMSHi/1.0 ");
+$ua->agent("irssi+SMSHi/1.0 ");
 
 $VERSION = "0.1";
 %IRSSI = (
 	authors		=> "John Runyon",
 	name		=> "smshi",
-	description	=> "send highlights via sms",
+	description	=> "send highlights via Twilio sms",
 	license		=> 'public domain',
 	url			=> 'https://github.com/zonidjan/irssi-scripts',
-	contact		=> 'https://github.com/zonidjan'
+	contact		=> 'https://github.com/zonidjan/irssi-scripts/issues'
 );
 
-sub msg {
+sub got_print {
 	return unless Irssi::settings_get_bool('smshi_active');
 
 	my ($dest, $text, $stripped) = @_;
-#	my ($server, $msg, $nick, $addr, $target) = @_;
 	my $server = $dest->{server};
 	my $mynick = $server->{nick};
-	return unless ($dest->{level} & MSGLEVEL_HILIGHT)
-	           or ($dest->{level} & MSGLEVEL_MSGS && index($stripped, $mynick) != -1);
-	return if $stripped =~ /<.?\Q$mynick\E>/; # avoid quotes
-	return if (!$server->{usermode_away} && Irssi::settings_get_bool('smshi_away_only'));
+	return unless ($dest->{level} & MSGLEVEL_HILIGHT) # continue if hilight...
+	           or ($dest->{level} & MSGLEVEL_MSGS && index($stripped, $mynick) != -1); # or if it's a PM containing my nick
+	return if $stripped =~ /<.?\Q$mynick\E>/; # avoid people quoting me
+	return if (!$server->{usermode_away} && Irssi::settings_get_bool('smshi_away_only')); # and obey away_only
 
 	my $msg = '';
 	for my $c (split //, $stripped) {
@@ -38,6 +39,13 @@ sub msg {
 
 	my $chname = $dest->{window}->get_active_name();
 	my $sms = $server->{tag}."/".$chname.$msg;
+	_send_sms($sms);
+}
+sub test_sms {
+	_send_sms("This is an SMS test.");
+}
+sub _send_sms {
+	my $sms = shift;
 
 	my $sid = Irssi::settings_get_str('smshi_sid');
 	my $token = Irssi::settings_get_str('smshi_token');
@@ -54,6 +62,7 @@ sub msg {
 	if ($res->is_success) {
 		print "Good. Sent to $to from $from: $sms";
 	} else {
+		print "Bad!";
 		print $req->url;
 		print $req->content;
 		print $res->status_line;
@@ -69,5 +78,6 @@ Irssi::settings_add_str('smshi', 'smshi_token', '');
 Irssi::settings_add_str('smshi', 'smshi_from', '');
 Irssi::settings_add_str('smshi', 'smshi_to', '');
 
-Irssi::signal_add('print text', 'msg');
+Irssi::signal_add('print text', 'got_print');
+Irssi::command_bind('testsms', 'test_sms');
 Irssi::print('%G>>%n '.$IRSSI{name}.' '.$VERSION.' loaded');
