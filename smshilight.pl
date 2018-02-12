@@ -1,18 +1,22 @@
 # smshi - sends highlights via SMS, using Twilio
+# CC0 https://creativecommons.org/publicdomain/zero/1.0/
+
+use strict;
+use warnings;
 
 use Irssi;
 use vars qw($VERSION %IRSSI);
 
 use LWP::UserAgent;
 my $ua = LWP::UserAgent->new;
-$ua->agent("irssi+SMSHi/1.0 ");
 
-$VERSION = "0.1";
+$VERSION = "1.0";
+$ua->agent("irssi+SMSHi/$VERSION ");
 %IRSSI = (
 	authors     => "John Runyon",
 	name        => "smshi",
 	description => "send highlights via Twilio sms",
-	license     => 'public domain',
+	license     => 'CC0',
 	url         => 'https://github.com/zonidjan/irssi-scripts',
 	contact     => 'https://github.com/zonidjan/irssi-scripts/issues'
 );
