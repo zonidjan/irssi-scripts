@@ -9,12 +9,12 @@ $ua->agent("irssi+SMSHi/1.0 ");
 
 $VERSION = "0.1";
 %IRSSI = (
-	authors		=> "John Runyon",
-	name		=> "smshi",
-	description	=> "send highlights via Twilio sms",
-	license		=> 'public domain',
-	url			=> 'https://github.com/zonidjan/irssi-scripts',
-	contact		=> 'https://github.com/zonidjan/irssi-scripts/issues'
+	authors     => "John Runyon",
+	name        => "smshi",
+	description => "send highlights via Twilio sms",
+	license     => 'public domain',
+	url         => 'https://github.com/zonidjan/irssi-scripts',
+	contact     => 'https://github.com/zonidjan/irssi-scripts/issues'
 );
 
 sub got_print {
