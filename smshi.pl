@@ -70,13 +70,13 @@ sub _send_sms {
 	}
 }
 
-Irssi::settings_add_bool('smshi', 'smshi_active', 0);
-Irssi::settings_add_bool('smshi', 'smshi_away_only', 1);
-Irssi::settings_add_bool('smshi', 'smshi_debug', 0);
-Irssi::settings_add_str('smshi', 'smshi_sid', '');
-Irssi::settings_add_str('smshi', 'smshi_token', '');
-Irssi::settings_add_str('smshi', 'smshi_from', '');
-Irssi::settings_add_str('smshi', 'smshi_to', '');
+Irssi::settings_add_bool('smshi', 'smshi_active', 0);    # master switch
+Irssi::settings_add_bool('smshi', 'smshi_away_only', 1); # send only when away?
+Irssi::settings_add_bool('smshi', 'smshi_debug', 0);     # show debugging info
+Irssi::settings_add_str('smshi', 'smshi_sid', '');       # Twilio SID
+Irssi::settings_add_str('smshi', 'smshi_token', '');     # Twilio token
+Irssi::settings_add_str('smshi', 'smshi_from', '');      # From number (+12022345678)
+Irssi::settings_add_str('smshi', 'smshi_to', '');        # To number (+12022345678)
 
 Irssi::signal_add('print text', 'got_print');
 Irssi::command_bind('testsms', 'test_sms');
